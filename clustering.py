@@ -56,8 +56,6 @@ d = {'ncm1': ncm1, 'ncm2': ncm2, 'ncm3': ncm3, 'cfop': df_temp['item.cfop'], 'ce
 df = pd.DataFrame(data=d)
 df['cest'].fillna(0, inplace=True)
 
-print(df.head(10))
-print(df_ant.head(10))
 
 # initial_centers = []
 # initial_centers.append(df.iloc[4615].tolist())
@@ -65,9 +63,9 @@ print(df_ant.head(10))
 # initial_centers.append(df.iloc[613207].tolist())
 # print(initial_centers)
 
-model = KMeans(n_clusters=3)#, init=np.asarray(initial_centers))
+kmeans = KMeans(n_clusters=3)#, init=np.asarray(initial_centers))
 
-labels = model.fit_predict(df[['ncm1', 'ncm2', 'cfop']].values)
+labels = kmeans.fit_predict(df[['ncm1', 'ncm2', 'cfop']].values)
 
 # Gerando a crosstab
 varieties = []
@@ -86,5 +84,6 @@ print(ct)
 
 # plt.scatter(result['ncm2'], result['cfop'], c=labels)
 # plt.show()
+
 
 

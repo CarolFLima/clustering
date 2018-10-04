@@ -1,7 +1,8 @@
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.cluster import KMeans
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 import math
 
 ##### Teste dropando linhas
@@ -15,16 +16,68 @@ tam_ant = df_ant.shape[0]
 tam_stdif = df_stdif.shape[0]
 tam_st = df_st.shape[0]
 
-frames = [df_ant, df_stdif, df_st]
-df_temp = pd.concat(frames)
+# frames = [df_ant, df_stdif, df_st]
+# df_temp = pd.concat(frames)
 
-print(len(df_temp['codificacao']))
-for i, row in df_temp.iterrows():
-    if math.isnan(row['item.cst']):
-        df_temp.drop(i, axis=0, inplace=True)
+# print(df_stdif[['item.gtin_trib', 'item.cst']].head(50))
 
-df_temp.to_csv('data/cest/data.csv')
-print(len(df_temp['codificacao']))
+# print(len(df_stdif['codificacao']))
+# j=0
+# for i, row in df_stdif.iterrows():
+#     if pd.isnull(row['item.gtin_trib']):
+#         j = j + 1
+#
+# print(j)
+
+# print( len(df_stdif['item.gtin_trib'].value_counts()))
+# df_temp.to_csv('data/cest/data.csv')
+# print(len(df_temp['codificacao']))
+
+
+############# Contagem do GTIN
+com8 = 0
+com12 = 0
+com13  = 0
+com14 = 0
+outros = 0
+valoresNulos = 0
+valores_gtin = df_stdif['item.gtin_trib'].value_counts()
+for valor, qtd in valores_gtin.items():
+    print(valor)
+    if not pd.isnull(valor):
+        if len(str(valor)) == 8:
+            com8 = com8 + 1
+        elif len(str(valor)) == 12:
+            com12 = com12 + 1
+        elif len(str(valor)) == 13:
+            com13 = com13 + 1
+        elif len(str(valor)) == 14:
+            com14 = com14 + 1
+        else:
+            outros = outros + 1
+    else:
+        valoresNulos = valoresNulos+1
+
+print("Com 8: " + str(com8))
+print("Com 12: " + str(com12))
+print("Com 13: " + str(com13))
+print("Com 14: " + str(com14))
+print("Outros: " + str(outros))
+print("Valores nulos: " + str(valoresNulos))
+
+############# Contagem do CEST
+# notnull = 0
+# null = 0
+# for index, item in df_ant['item.cst'].items():
+#
+#     if not pd.isnull(item):
+#         notnull = notnull + 1
+#     else :
+#         null = null + 1
+# print("Valor não-nulo: "+str(notnull))
+# print("Valor nulo: "+str(null))
+
+
 
 # col = ['string.mva_valor', 'string.mva_tipo', 'string.aliquota_icms',
 #        'string.aliquota_fecoep', 'string.aliq_ie', 'string.tipo_imposto']
