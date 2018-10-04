@@ -43,10 +43,9 @@ for item in item_ncm:
 
 # Classificando os clusters
 
-d = {'ncm1': ncm1, 'ncm2': ncm2, 'ncm3': ncm3, 'cfop': df_temp['item.cfop'], 'cest': df_temp['item.cst']}
+d = {'ncm1': ncm1, 'ncm2': ncm2, 'ncm3': ncm3, 'cfop': df_temp['item.cfop'], 'cest': df_temp['item.cst'], 'gtin': df_temp['item.gtin_trib']}
 df = pd.DataFrame(data=d)
 df['cest'].fillna(0, inplace=True)
-
 
 # initial_centers = []
 # initial_centers.append(df.iloc[4615].tolist())

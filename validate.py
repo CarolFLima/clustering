@@ -33,13 +33,17 @@ def transform_gtin_14(item):
         resultado = prox_decimal - produto_escalar
         resultado = resultado % 10
         gtin_13 = np.append(gtin_13, resultado)
-        print(''.join(gtin_13))
+    return ''.join(gtin_13)
 
 
 for item in item_gtin:
     i = str(item).replace(".", "")
     if pd.notnull(item) and len(i) == 14:
         transform_gtin_14(item)
+
+
+
+
 
 
 
