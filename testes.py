@@ -1,6 +1,7 @@
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
+from validate import validate_gtin
+from validate import transform_gtin_14
 import pandas as pd
 import numpy as np
 import math
@@ -19,51 +20,49 @@ tam_st = df_st.shape[0]
 # frames = [df_ant, df_stdif, df_st]
 # df_temp = pd.concat(frames)
 
-# print(df_stdif[['item.gtin_trib', 'item.cst']].head(50))
+############### Gerar novos dataframes
+idx = []
+for index, row in df_st.iterrows():
+    item_gtin = row['item.gtin_trib']
+    if len(str(item_gtin)) == 13 and validate_gtin(item_gtin):
+        idx.append(index)
+    elif len(str(item_gtin)) == 14:
+        transform_gtin_14(item_gtin)
+        idx.append(index)
 
-# print(len(df_stdif['codificacao']))
-# j=0
-# for i, row in df_stdif.iterrows():
-#     if pd.isnull(row['item.gtin_trib']):
-#         j = j + 1
+print(len(df_st.loc[idx]))
+df_st.loc[idx].to_csv('data/gtin/st.csv')
+
+# ############# Contagem do GTIN
+# com8 = 0
+# com12 = 0
+# com13  = 0
+# com14 = 0
+# outros = 0
+# valoresNulos = 0
+# valores_gtin = df_stdif['item.gtin_trib'].value_counts()
+# for valor, qtd in valores_gtin.items():
+#     print(valor)
+#     if not pd.isnull(valor):
+#         if len(str(valor)) == 8:
+#             com8 = com8 + 1
+#         elif len(str(valor)) == 12:
+#             com12 = com12 + 1
+#         elif len(str(valor)) == 13:
+#             com13 = com13 + 1
+#         elif len(str(valor)) == 14:
+#             com14 = com14 + 1
+#         else:
+#             outros = outros + 1
+#     else:
+#         valoresNulos = valoresNulos+1
 #
-# print(j)
-
-# print( len(df_stdif['item.gtin_trib'].value_counts()))
-# df_temp.to_csv('data/cest/data.csv')
-# print(len(df_temp['codificacao']))
-
-
-############# Contagem do GTIN
-com8 = 0
-com12 = 0
-com13  = 0
-com14 = 0
-outros = 0
-valoresNulos = 0
-valores_gtin = df_stdif['item.gtin_trib'].value_counts()
-for valor, qtd in valores_gtin.items():
-    print(valor)
-    if not pd.isnull(valor):
-        if len(str(valor)) == 8:
-            com8 = com8 + 1
-        elif len(str(valor)) == 12:
-            com12 = com12 + 1
-        elif len(str(valor)) == 13:
-            com13 = com13 + 1
-        elif len(str(valor)) == 14:
-            com14 = com14 + 1
-        else:
-            outros = outros + 1
-    else:
-        valoresNulos = valoresNulos+1
-
-print("Com 8: " + str(com8))
-print("Com 12: " + str(com12))
-print("Com 13: " + str(com13))
-print("Com 14: " + str(com14))
-print("Outros: " + str(outros))
-print("Valores nulos: " + str(valoresNulos))
+# print("Com 8: " + str(com8))
+# print("Com 12: " + str(com12))
+# print("Com 13: " + str(com13))
+# print("Com 14: " + str(com14))
+# print("Outros: " + str(outros))
+# print("Valores nulos: " + str(valoresNulos))
 
 ############# Contagem do CEST
 # notnull = 0

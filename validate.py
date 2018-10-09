@@ -26,6 +26,7 @@ def validate_gtin(item):
 
 def transform_gtin_14(item):
     vec_mult = np.array([1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3])
+    i = str(item).replace(".", "")
     if pd.notnull(item) and len(i) == 14:
         gtin_13 = np.array([i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11], i[12]])
         produto_escalar = np.sum(vec_mult * gtin_13.astype(int))
@@ -40,10 +41,5 @@ for item in item_gtin:
     i = str(item).replace(".", "")
     if pd.notnull(item) and len(i) == 14:
         transform_gtin_14(item)
-
-
-
-
-
 
 
