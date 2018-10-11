@@ -7,7 +7,6 @@ import numpy as np
 import math
 
 ##### Teste dropando linhas
-# Lendo do csv
 df_ant = pd.read_csv('data/csv/ant.csv')
 df_stdif = pd.read_csv('data/csv/stdif.csv')
 df_st = pd.read_csv('data/csv/st.csv')
@@ -17,21 +16,28 @@ tam_ant = df_ant.shape[0]
 tam_stdif = df_stdif.shape[0]
 tam_st = df_st.shape[0]
 
-# frames = [df_ant, df_stdif, df_st]
-# df_temp = pd.concat(frames)
+
+frames = [df_ant, df_stdif, df_st]
+df_temp = pd.concat(frames)
+
+print(df_temp.info())
 
 ############### Gerar novos dataframes
-idx = []
-for index, row in df_st.iterrows():
-    item_gtin = row['item.gtin_trib']
-    if len(str(item_gtin)) == 13 and validate_gtin(item_gtin):
-        idx.append(index)
-    elif len(str(item_gtin)) == 14:
-        transform_gtin_14(item_gtin)
-        idx.append(index)
-
-print(len(df_st.loc[idx]))
-df_st.loc[idx].to_csv('data/gtin/st.csv')
+# idx = []
+# for index, row in df_temp.iterrows():
+#     item_gtin = row['item.gtin_trib']
+#     i = str(item_gtin).replace(".", "")
+#     # if validate_gtin(i):
+#     #     print("Entrou aqui")
+#     #     idx.append(index)
+#     # else:
+#     if len(i) == 14:
+#         res, gtin_13 = transform_gtin_14(i)
+#         if res:
+#             df_temp.loc[index, 'item.gtin_trib'] = float(gtin_13)
+#             idx.append(index)
+#
+# print(len(df_temp.loc[idx]))
 
 # ############# Contagem do GTIN
 # com8 = 0
@@ -75,8 +81,6 @@ df_st.loc[idx].to_csv('data/gtin/st.csv')
 #         null = null + 1
 # print("Valor não-nulo: "+str(notnull))
 # print("Valor nulo: "+str(null))
-
-
 
 # col = ['string.mva_valor', 'string.mva_tipo', 'string.aliquota_icms',
 #        'string.aliquota_fecoep', 'string.aliq_ie', 'string.tipo_imposto']

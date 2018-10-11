@@ -1,4 +1,6 @@
 from sklearn.cluster import KMeans
+from validate import transform_gtin_14
+from validate import validate_gtin
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -50,9 +52,26 @@ for item in item_ncm:
     ncm2.append(a2)
     ncm3.append(a3)
 
-# Classificando os clusters
+# Preparando o GTIN
+idx = []
+for index, row in df_temp.iterrows():
+    item_gtin = row['item.gtin_trib']
+    i = str(item_gtin).replace(".", "")
+    # if validate_gtin(i):
+    #     print("Entrou aqui")
+    #     idx.append(index)
+    # else:
+    if len(i) == 14:
+        res, gtin_13 = transform_gtin_14(i)
+        if res:
+            df_temp.loc[index, 'item.gtin_trib'] = float(gtin_13)
+            idx.append(index)
+df_temp = df_temp.loc[idx]
 
-d = {'ncm1': ncm1, 'ncm2': ncm2, 'ncm3': ncm3, 'cfop': df_temp['item.cfop'], 'cest': df_temp['item.cst']}
+
+# Classificando os clusters
+d = {'ncm1': ncm1, 'ncm2': ncm2, 'ncm3': ncm3, 'cfop': df_temp['item.cfop'],
+     'cest': df_temp['item.cst'], 'gtin': df_temp['item.gtin_trib']}
 df = pd.DataFrame(data=d)
 df['cest'].fillna(0, inplace=True)
 
@@ -65,7 +84,7 @@ df['cest'].fillna(0, inplace=True)
 
 kmeans = KMeans(n_clusters=3)#, init=np.asarray(initial_centers))
 
-labels = kmeans.fit_predict(df[['ncm1', 'ncm2', 'cfop']].values)
+labels = kmeans.fit_predict(df[['ncm1', 'ncm2', 'ncm3', 'cfop', 'cest', 'gtin']].values)
 
 # Gerando a crosstab
 varieties = []
@@ -76,8 +95,11 @@ for i in range(tam_stdif):
 for i in range(tam_st):
     varieties.append("ST")
 
-result = pd.DataFrame({'labels': labels, 'varieties': varieties, 'ncm1': ncm1,
-                       'ncm2': ncm2, 'cfop': df['cfop'], 'cest': df['cest']})
+# result = pd.DataFrame({'labels': labels, 'varieties': varieties, 'ncm1': ncm1,
+#                        'ncm2': ncm2, 'cfop': df['cfop'], 'cest': df['cest']})
+
+result = pd.DataFrame({'labels': labels, 'varieties': varieties, 'ncm1': ncm1, 'ncm2': ncm2, 'ncm3': ncm3, 'cfop': df_temp['item.cfop'],
+     'cest': df_temp['item.cst'], 'gtin': df_temp['item.gtin_trib']})
 
 ct = pd.crosstab(result['labels'], result['varieties'])
 print(ct)
